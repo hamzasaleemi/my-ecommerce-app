@@ -3,13 +3,13 @@
 namespace App\Http\Requests\Auth;
 
 use Illuminate\Auth\Events\Lockout;
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
+use App\Http\Requests\BaseRequest;
 
-class LoginRequest extends FormRequest
+class LoginRequest extends BaseRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -27,29 +27,25 @@ class LoginRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => ['required', 'string', 'email'],
+            'email' => ['required', 'string', 'max:255', 'email', 'exists:users,email'],
             'password' => ['required', 'string'],
         ];
     }
 
     /**
-     * Attempt to authenticate the request's credentials.
+     * Get custom messages for validator errors.
      *
-     * @throws \Illuminate\Validation\ValidationException
+     * @return array
      */
-    public function authenticate(): void
+    public function messages()
     {
-        $this->ensureIsNotRateLimited();
-
-        if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
-            RateLimiter::hit($this->throttleKey());
-
-            throw ValidationException::withMessages([
-                'email' => trans('auth.failed'),
-            ]);
-        }
-
-        RateLimiter::clear($this->throttleKey());
+        return [
+            'email.required' => $this->errorMessages['required'],
+            'email.email' => $this->errorMessages['email'],
+            'email.max' => $this->errorMessages['max'],
+            'email.exists' => $this->errorMessages['exists'],
+            'password.required' => $this->errorMessages['required'],
+        ];
     }
 
     /**

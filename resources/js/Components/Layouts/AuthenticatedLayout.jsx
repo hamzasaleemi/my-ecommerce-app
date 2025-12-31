@@ -1,7 +1,7 @@
-import ApplicationLogo from '@/Components/ApplicationLogo';
-import Dropdown from '@/Components/Dropdown';
-import NavLink from '@/Components/NavLink';
-import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
+import ApplicationLogo from '@/Components/UI/ApplicationLogo';
+import Dropdown from '@/Components/UI/Input/Dropdown';
+import NavLink from '@/Components/UI/NavBar/NavLink';
+import ResponsiveNavLink from '@/Components/UI/NavBar/ResponsiveNavLink';
 import { Link, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 
@@ -30,6 +30,20 @@ export default function AuthenticatedLayout({ header, children }) {
                                 >
                                     Dashboard
                                 </NavLink>
+                                <NavLink
+                                    href={route('cart')}
+                                    active={route().current('cart')}
+                                >
+                                    Cart
+                                </NavLink>
+                                {user.role === 'admin' &&
+                                    <NavLink
+                                        href={route('settings.edit')}
+                                        active={route().current('settings.edit')}
+                                    >
+                                        Settings
+                                    </NavLink>
+                                }
                             </div>
                         </div>
 
@@ -134,6 +148,20 @@ export default function AuthenticatedLayout({ header, children }) {
                         >
                             Dashboard
                         </ResponsiveNavLink>
+                        <ResponsiveNavLink
+                            href={route('cart')}
+                            active={route().current('cart')}
+                        >
+                            Cart
+                        </ResponsiveNavLink>
+                        {user.role === 'admin' &&
+                            <ResponsiveNavLink
+                                href={route('settings.edit')}
+                                active={route().current('settings.edit')}
+                            >
+                                Settings
+                            </ResponsiveNavLink>
+                        }
                     </div>
 
                     <div className="border-t border-gray-200 pb-1 pt-4">
