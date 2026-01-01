@@ -12,9 +12,16 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('product_images', function (Blueprint $table) {
+            // Primary Key
             $table->id();
+
+            // Foreign Keys
             $table->foreignId('product_id')->constrained()->onDelete('cascade');
+
+            // Table Columns
             $table->string('image_path');
+
+            // Timestamps
             $table->timestamps();
         });
     }
