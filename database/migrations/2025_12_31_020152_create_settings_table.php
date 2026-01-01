@@ -12,8 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('settings', function (Blueprint $table) {
+            // Primary Key
             $table->id();
+
+            // Table Columns
             $table->integer('low_stock_threshold')->default(5);
+
+            // Timestamps
             $table->timestamps();
         });
     }

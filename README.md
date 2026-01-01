@@ -2,6 +2,7 @@
 Simple ecommerce cart functionality appplication.
 
 ## Database
+
 ### users
 * `id`
 * `name`
@@ -33,6 +34,22 @@ Simple ecommerce cart functionality appplication.
 * `quantity`
 * `created_at`
 * `updated_at`
+### orders
+* `id`
+* `user_id`
+* `total_amount`
+* `status`
+### order_items
+* `id`
+* `order_id`
+* `product_id`
+* `quantity`
+* `price_at_time_of_purchase`
+### payments
+* `id`
+* `order_id`
+* `transaction_id`
+* `amount_paid`
 
 ## User Roles
 * `admin`
