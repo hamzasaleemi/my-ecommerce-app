@@ -24,6 +24,9 @@ return new class extends Migration
 
             // Timestamps
             $table->timestamps();
+
+            // Indexes
+            $table->index(['user_id', 'product_id']);
         });
     }
 

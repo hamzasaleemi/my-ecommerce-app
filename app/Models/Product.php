@@ -33,8 +33,33 @@ class Product extends BaseModel
     }
 
     /**
+     * Get the cart items for the product.
+     */
+    public function cartItems(): HasMany
+    {
+        return $this->hasMany(CartItem::class);
+    }
+
+    /**
+     * Get the product images for the product.
+     */
+    public function productImages(): HasMany
+    {
+        return $this->hasMany(ProductImage::class);
+    }
+
+    /**
      * ---------------------------------------------------------------------
      * End Relationships
      * ---------------------------------------------------------------------
      */
+
+    public function scopeWithCartQuantity($query, $userId)
+    {
+        return $query->select('products.*')
+            ->selectRaw('
+                (SELECT quantity FROM cart_items WHERE cart_items.product_id = products.id AND cart_items.user_id = ?) AS cart_quantity
+            ', [$userId]
+            );
+    }
 }

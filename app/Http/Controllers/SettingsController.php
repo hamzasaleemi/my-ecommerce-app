@@ -2,19 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Http\Requests\Settings\SettingUpdateRequest;
 use Inertia\Inertia;
 use Inertia\Response;
 use App\Contracts\Services\SettingServiceInterface;
+use App\Contracts\Repositories\SettingRepositoryInterface;
 
-class SettingController extends Controller
+class SettingsController extends Controller
 {
     private SettingServiceInterface $settingService;
+    private SettingRepositoryInterface $settingRepository;
 
-    public function __construct(SettingServiceInterface $settingService)
+    public function __construct(SettingServiceInterface $settingService, SettingRepositoryInterface $settingRepository)
     {
         $this->settingService = $settingService;
+        $this->settingRepository = $settingRepository;
     }
 
     /**
@@ -22,7 +24,7 @@ class SettingController extends Controller
      */
     public function edit(): Response
     {
-        $settings = $this->settingService->get();
+        $settings = $this->settingRepository->first();
         return Inertia::render('Settings/Edit', [
             'settings' => $settings,
         ]);

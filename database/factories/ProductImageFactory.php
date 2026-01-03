@@ -5,6 +5,7 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\ProductImage;
 use App\Models\Product;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Product>
@@ -26,9 +27,12 @@ class ProductImageFactory extends Factory
     public function definition(): array
     {
         $product_id = Product::inRandomOrder()->first()->id;
+        $file = file_get_contents(config('app.url') . '/images/temp/' . fake()->numberBetween(1, 10) . '.jpg');
+        $imageNumber = fake()->unique()->numberBetween(1, 1000);
+        Storage::put('images/products/product_' . $product_id . '_image_' . $imageNumber . '.jpg', $file);
         return [
             'product_id' => $product_id,
-            'image_path' => 'product_' . $product_id . '_image_' . fake()->unique()->numberBetween(1, 1000) . '.jpg',
+            'image_path' => 'images/products/product_' . $product_id . '_image_' . $imageNumber . '.jpg',
         ];
     }
 

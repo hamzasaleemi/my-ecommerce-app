@@ -1,6 +1,7 @@
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, usePage } from '@inertiajs/react';
 
-export default function Welcome({ auth, laravelVersion, phpVersion }) {
+export default function Welcome({ laravelVersion, phpVersion }) {
+    const { auth } = usePage().props;
     return (
         <>
             <Head title="Welcome" />
@@ -50,7 +51,7 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
 
                         <main className="mt-6 text-center">
                             <h1 className="text-4xl font-bold text-black dark:text-white lg:text-5xl">
-                                Welcome to your My Ecommerce application!
+                                Welcome to My Ecommerce application for TrustFactory!
                             </h1>
                             <p className="mt-6 text-lg leading-7">
                                 This is your application's welcome page. This is a demo
@@ -60,7 +61,7 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                         </main>
 
                         <footer className="py-16 text-center text-sm text-black dark:text-white/70">
-                            Laravel v{laravelVersion} (PHP v{phpVersion})
+                            Laravel v{laravelVersion} (PHP v{phpVersion}) | Developed by Muhammad Hamza Saleemi
                         </footer>
                     </div>
                 </div>

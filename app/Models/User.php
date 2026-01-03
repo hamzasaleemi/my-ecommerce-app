@@ -12,6 +12,8 @@ use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Illuminate\Foundation\Auth\Access\Authorizable;
+use Illuminate\Database\Eloquent\Attributes\Scope;
+use Illuminate\Database\Eloquent\Builder;
 
 class User extends BaseModel implements
     AuthenticatableContract,
@@ -59,6 +61,26 @@ class User extends BaseModel implements
     /**
      * ---------------------------------------------------------------------
      * End Relationships
+     * ---------------------------------------------------------------------
+     */
+
+    /**
+     * ---------------------------------------------------------------------
+     * Scopes
+     * ---------------------------------------------------------------------
+     */
+
+    /**
+     * Scope a query to only include user role.
+     */
+    protected function scopeUser(Builder $query): Builder
+    {
+        return $query->where('role', 'user');
+    }
+
+    /**
+     * ---------------------------------------------------------------------
+     * End Scopes
      * ---------------------------------------------------------------------
      */
 }
