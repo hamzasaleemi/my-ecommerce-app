@@ -11,8 +11,9 @@ class StorageController extends Controller
 {
     public function getProductImage($filename)
     {
-        if (!preg_match('/^[a-zA-Z0-9._-]+$/', $filename)) {
-            abort(403, 'Invalid filename');
+        $filename = basename($filename);
+        if (!preg_match('/^(?!.*\.\.)[a-zA-Z0-9._-]+$/', $filename)) {
+            abort(403, 'Invalid filename. Allowed characters are letters, numbers, dot (.), underscore (_) and hyphen (-).');
         }
         if (!Storage::exists('images/products/' . $filename)) {
             abort(404);
