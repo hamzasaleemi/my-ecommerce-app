@@ -11,9 +11,4 @@ class SettingRepository extends BaseRepository implements RepositoryInterface
     {
         parent::__construct($model);
     }
-
-    public function first(): ?Model
-    {
-        return $this->model->first();
-    }
 }

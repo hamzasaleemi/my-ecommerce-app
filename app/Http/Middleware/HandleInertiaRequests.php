@@ -5,6 +5,9 @@ namespace App\Http\Middleware;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 use Tighten\Ziggy\Ziggy;
+use Illuminate\Support\Facades\Storage;
+use App\Contracts\Repositories\SettingRepositoryInterface;
+use App\Contracts\Services\CartItemServiceInterface;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -35,6 +38,11 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => $request->user(),
             ],
+            'appUrl' => config('app.url'),
+            'assetUrl' => asset(''),
+            'storageUrl' => Storage::url(''),
+            'cartItemsCount' => $request->user() ? app(CartItemServiceInterface::class)->getCartItemsCount() : 0,
+            'settings' => app(SettingRepositoryInterface::class)->first(),
             'ziggy' => fn () => [
                 ...(new Ziggy)->toArray(),
                 'location' => $request->url(),
