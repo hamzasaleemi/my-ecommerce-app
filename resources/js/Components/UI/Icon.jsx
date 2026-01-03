@@ -42,7 +42,7 @@ export function TrashIcon() {
             <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"/>
         </svg>
     );
-}
+};
 
 export function ShoppingCartIcon() {
     return (
@@ -50,7 +50,7 @@ export function ShoppingCartIcon() {
             <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 4h1.5L9 16m0 0h8m-8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm-8.5-3h9.25L19 7H7.312"/>
         </svg>
     );
-}
+};
 
 export function WarningIcon() {
     return (
@@ -58,4 +58,4 @@ export function WarningIcon() {
             <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 3.25 1.5 21h21L12 3.25ZM12 9v4m0 4h.01"/>
         </svg>
     );
-}
+};
