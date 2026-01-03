@@ -15,7 +15,7 @@ class StorageController extends Controller
             abort(404);
         }
         $contents = Storage::get('images/products/' . $filename);
-        $mime = Storage::mimeType('file.txt');
+        $mime = Storage::mimeType('images/products/' . $filename);
         $file = response($contents, 200)->header('Content-Type', $mime);
         return $file;
     }

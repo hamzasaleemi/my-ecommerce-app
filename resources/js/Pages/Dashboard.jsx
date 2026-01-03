@@ -1,7 +1,7 @@
 import AuthenticatedLayout from '@/Components/Layouts/AuthenticatedLayout';
 import DashboardCard from '@/Components/UI/AdminPanel/Dashboard/Card';
 import ProductList from '@/Components/UI/AdminPanel/Products/List';
-import { UserIcon, ShoppingBagIcon } from '@/Components/UI/Icon';
+import { UserIcon, ShoppingBagIcon, WarningIcon } from '@/Components/UI/Icon';
 import { Head, usePage } from '@inertiajs/react';
 
 
@@ -38,7 +38,7 @@ export default function Dashboard({ usersCount, ordersCount, lowStockProductsCou
                                     <DashboardCard
                                         title="Low Stock Products"
                                         value={lowStockProductsCount}
-                                        icon={<UserIcon />}
+                                        icon={<WarningIcon />}
                                         type="warning"
                                     />
                                 </div>
