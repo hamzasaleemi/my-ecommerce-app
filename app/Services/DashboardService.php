@@ -27,11 +27,11 @@ class DashboardService extends BaseService implements ServiceInterface
     {
         $data = [];
         if ($this->authService->getAuthenticatedUser()->role === 'admin') {
-            $data['usersCount'] = number_format($this->userService->getUsersCount());
-            $data['ordersCount'] = number_format($this->orderService->getOrdersCount());
-            $data['lowStockProductsCount'] = number_format($this->productService->getLowStockProductsCount());
+            $data['usersCount'] = $this->userService->getUsersCount();
+            $data['ordersCount'] = $this->orderService->getOrdersCount();
+            $data['lowStockProductsCount'] = $this->productService->getLowStockProductsCount();
         }
-        $data['products'] = $this->productService->getProductsForListing();
+        $data['products'] = $this->productService->getForListing();
         return $data;
     }
 }

@@ -3,17 +3,16 @@
 namespace App\Http\Requests\Cart;
 
 use App\Http\Requests\BaseRequest;
-use App\Rules\WithinStockQuantity;
-use App\Contracts\Repositories\ProductRepositoryInterface;
+use App\Contracts\Services\CartItemServiceInterface;
 
-class CartAddItemRequest extends BaseRequest
+class UpdateCartItemRequest extends BaseRequest
 {
-    private ProductRepositoryInterface $productRepository;
+    private CartItemServiceInterface $cartItemService;
 
-    public function __construct(ProductRepositoryInterface $productRepository)
+    public function __construct(CartItemServiceInterface $cartItemService)
     {
         parent::__construct();
-        $this->productRepository = $productRepository;
+        $this->cartItemService = $cartItemService;
     }
 
     /**
@@ -21,10 +20,7 @@ class CartAddItemRequest extends BaseRequest
      */
     public function authorize(): bool
     {
-        if ($this->user()) {
-            return true;
-        }
-        return false;
+        return true;
     }
 
     /**
@@ -35,9 +31,20 @@ class CartAddItemRequest extends BaseRequest
     public function rules(): array
     {
         return [
-            'product_id' => 'required|integer|exists:products,id',
-            'quantity' => ['required', 'integer', 'min:1', new WithinStockQuantity($this->productRepository, $this->input('product_id'))],
+            'quantity' => 'required|integer|min:1'
         ];
+    }
+
+    public function withValidator($validator)
+    {
+        $validator->after(function ($validator) {
+            if (!$this->cartItemService->isStockAvailable($this->route('id'), $this->input('quantity'))) {
+                $validator->errors()->add(
+                    'quantity',
+                    'Insufficient stock available for this product.'
+                );
+            }
+        });
     }
 
     /**
@@ -48,9 +55,6 @@ class CartAddItemRequest extends BaseRequest
     public function messages()
     {
         return [
-            'product_id.required' => $this->errorMessages['required'],
-            'product_id.integer' => $this->errorMessages['integer'],
-            'product_id.exists' => $this->errorMessages['exists'],
             'quantity.required' => $this->errorMessages['required'],
             'quantity.integer' => $this->errorMessages['integer'],
             'quantity.min' => $this->errorMessages['min']

@@ -53,9 +53,19 @@ class BaseRepository implements RepositoryInterface
             });
         }
 
+        if (isset($filters['select'])) {
+            $query->select($filters['select']);
+        }
+
         if (isset($filters['whereConditions'])) {
             foreach ($filters['whereConditions'] as $condition) {
                 $query->where($condition['field'], $condition['operator'], $condition['value']);
+            }
+        }
+
+        if (isset($filters['whereInConditions'])) {
+            foreach ($filters['whereInConditions'] as $condition) {
+                $query->whereIn($condition['field'], $condition['values']);
             }
         }
 
@@ -69,10 +79,31 @@ class BaseRepository implements RepositoryInterface
             }
         }
 
-        if (isset($filters['relations'])) {
-            foreach ($filters['relations'] as $relation) {
-                $query->with($relation);
+        if (isset($filters['joins'])) {
+            foreach ($filters['joins'] as $join) {
+                $type = $join['type'] ?? 'inner';
+                if ($type === 'inner') {
+                    $query->join($join['table'], $join['first'], $join['operator'], $join['second']);
+                } elseif ($type === 'left') {
+                    $query->leftJoin($join['table'], $join['first'], $join['operator'], $join['second']);
+                } elseif ($type === 'right') {
+                    $query->rightJoin($join['table'], $join['first'], $join['operator'], $join['second']);
+                }
             }
+        }
+
+        if (isset($filters['relations'])) {
+            foreach ($filters['relations'] as $relation => $constraints) {
+                if (is_null($constraints)) {
+                    $query->with($relation);
+                } else {
+                    $query->with([$relation => $constraints]);
+                }
+            }
+        }
+
+        if (isset($filters['groupBy'])) {
+            $query->groupBy($filters['groupBy']);
         }
 
         if (isset($filters['sortOrders'])) {
@@ -89,12 +120,25 @@ class BaseRepository implements RepositoryInterface
         $query = $this->model->newQuery();
         $query = $this->applyFilters($query, $filters);
 
+        if (isset($filters['lockForUpdate']) && $filters['lockForUpdate'] === true) {
+            $query->lockForUpdate();
+        }
+
         if (isset($filters['count']) && $filters['count'] === true) {
             return $query->count();
         }
 
         if (isset($filters['first'])) {
             return $query->first();
+        }
+
+        if (isset($filters['paginate'])) {
+            if (is_int($filters['paginate'])) {
+                $perPage = $filters['paginate'];
+            } else {
+                $perPage = 9;
+            }
+            return $query->paginate($perPage);
         }
 
         return $query->get();
@@ -109,11 +153,6 @@ class BaseRepository implements RepositoryInterface
     public function create(array $data): Model
     {
         return $this->model->create($data);
-    }
-
-    public function lockForUpdate(int $id): ?Model
-    {
-        return $this->model->where('id', $id)->lockForUpdate()->first();
     }
 
     public function update(int $id, array $data): bool

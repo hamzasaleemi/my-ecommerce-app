@@ -11,4 +11,15 @@ class OrderRepository extends BaseRepository implements RepositoryInterface
     {
         parent::__construct($model);
     }
+
+    public function create(array $data): Model
+    {
+        $order = parent::create([
+            'user_id' => $data['user_id'],
+            'total_amount' => $data['total_amount'],
+            'status' => $data['status'],
+        ]);
+        $order->orderItems()->createMany($data['orderItems']);
+        return $order;
+    }
 }

@@ -1,8 +1,9 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\CartController;
+use App\Http\Controllers\CartItemController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\StorageController;
 use Illuminate\Foundation\Application;
@@ -26,15 +27,22 @@ Route::middleware('auth')->group(function () {
     Route::middleware('verified')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-        Route::prefix('cart')->name('cart.')->group(function () {
-            Route::get('/', [CartController::class, 'view'])->name('view');
-            Route::post('/add-item', [CartController::class, 'addItem'])->name('add-item');
-            Route::post('/update-item', [CartController::class, 'updateItem'])->name('update-item');
-            Route::post('/remove-item', [CartController::class, 'removeItem'])->name('remove-item');
+        Route::prefix('cart-items')->name('cart-items.')->group(function () {
+            Route::get('/', [CartItemController::class, 'index'])->name('index');
+            Route::post('/', [CartItemController::class, 'store'])->name('store');
+            Route::patch('/{id}', [CartItemController::class, 'update'])->name('update');
+            Route::delete('/{id}', [CartItemController::class, 'destroy'])->name('destroy');
         });
 
-        Route::get('/settings', [SettingsController::class, 'edit'])->middleware('role:admin')->name('settings.edit');
-        Route::patch('/settings', [SettingsController::class, 'update'])->middleware('role:admin')->name('settings.update');
+        Route::prefix('orders')->name('orders.')->group(function () {
+            Route::get('/', [OrderController::class, 'index'])->name('index');
+            Route::post('/', [OrderController::class, 'store'])->name('store');
+        });
+
+        Route::middleware('role:admin')->group(function () {
+            Route::get('/settings', [SettingsController::class, 'edit'])->name('settings.edit');
+            Route::put('/settings', [SettingsController::class, 'update'])->name('settings.update');
+        });
     });
 });
 

@@ -5,7 +5,7 @@ namespace App\Services;
 use App\Contracts\Services\ProductServiceInterface as ServiceInterface;
 use App\Contracts\Repositories\ProductRepositoryInterface;
 use App\Contracts\Repositories\SettingRepositoryInterface;
-use Illuminate\Support\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 use App\Services\AuthService;
 
 class ProductService extends BaseService implements ServiceInterface
@@ -34,13 +34,50 @@ class ProductService extends BaseService implements ServiceInterface
         return $count;
     }
 
-    public function getProductsForListing(): Collection
+    public function getById(int $id)
+    {
+        return $this->productRepository->find($id);
+    }
+
+    public function getForListing(): LengthAwarePaginator
+    {
+        $userId = $this->authService->getAuthenticatedUser()?->id;
+        return $this->productRepository->get([
+            'relations' => [
+                'productImages' => null,
+                'cartItems' => function ($query) use ($userId) {
+                    $query->where('user_id', $userId);
+                }
+            ],
+            'order_by' => ['created_at' => 'desc'],
+            'paginate' => true,
+        ]);
+    }
+
+    public function isStockAvailable(int $productId, int $requestedQuantity): bool
+    {
+        $product = $this->productRepository->find($productId);
+        if (!$product) {
+            return false;
+        }
+        return $requestedQuantity <= $product->stock_quantity;
+    }
+
+    public function lockProductsForUpdate(array $productIds)
     {
         return $this->productRepository->get([
-            'relations' => ['productImages'],
-            'scopeMethods' => [
-                'withCartQuantity' => [$this->authService->getAuthenticatedUser()?->id]
+            'whereInConditions' => [
+                ['field' => 'id', 'values' => $productIds],
             ],
+            'lockForUpdate' => true,
         ]);
+    }
+
+    public function decreaseStockQuantity(int $productId, int $quantity): void
+    {
+        $product = $this->productRepository->find($productId);
+        if ($product) {
+            $this->productRepository->update($productId, ['stock_quantity' => $product->stock_quantity - $quantity]);
+        }
     }
 }

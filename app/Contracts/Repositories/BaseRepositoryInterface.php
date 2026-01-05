@@ -13,7 +13,6 @@ interface BaseRepositoryInterface
     public function count(): int;
     public function get(array $filters = []);
     public function create(array $data): Model;
-    public function lockForUpdate(int $id): ?Model;
     public function update(int $id, array $data): bool;
     public function destroy(array $ids): int;
 }
