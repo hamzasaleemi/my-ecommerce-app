@@ -34,8 +34,10 @@ class OrderController extends Controller
             $this->orderService->store($validated);
         } catch (StockNotAvailableException $e) {
             return redirect()->back()->withErrors(['error' => $e->getMessage()]);
+        } catch (\Exception $e) {
+            return redirect()->back()->withErrors(['error' => 'An unexpected error occurred while placing the order. Please try again later.']);
         }
 
-        return redirect()->back()->with('success', 'Item added to cart successfully.');
+        return redirect()->route('orders.index')->with('success', 'Order placed successfully.');
     }
 }

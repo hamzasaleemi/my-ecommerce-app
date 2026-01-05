@@ -19,7 +19,7 @@ export default function ProductCard({ product }) {
 
     const handleAddToCart = (e) => {
         e.preventDefault();
-        addCartItem(product.id, quantity);
+        addCartItem();
         updateCartItemForm.setData('quantity', quantity);
     };
 

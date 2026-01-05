@@ -136,7 +136,7 @@ class BaseRepository implements RepositoryInterface
             if (is_int($filters['paginate'])) {
                 $perPage = $filters['paginate'];
             } else {
-                $perPage = 9;
+                $perPage = 10;
             }
             return $query->paginate($perPage);
         }

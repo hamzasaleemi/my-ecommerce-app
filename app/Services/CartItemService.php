@@ -108,7 +108,7 @@ class CartItemService extends BaseService implements ServiceInterface
 
     public function destroy($id): bool
     {
-        return $this->cartItemRepository->destroy([$id]) > 0 ? true : false;
+        return $this->cartItemRepository->destroy([$id]) > 0;
     }
 
     public function isStockAvailable($cartItemId, $requestedQuantity): bool

@@ -3,16 +3,15 @@
 namespace App\Http\Requests\Order;
 
 use App\Http\Requests\BaseRequest;
-use App\Contracts\Services\ProductServiceInterface;
+use App\Contracts\Repositories\ProductRepositoryInterface;
 
 class AddOrderRequest extends BaseRequest
 {
-    private ProductServiceInterface $productService;
-
-    public function __construct(ProductServiceInterface $productService)
+    private ProductRepositoryInterface $productRepository;
+    public function __construct(ProductRepositoryInterface $productRepository)
     {
         parent::__construct();
-        $this->productService = $productService;
+        $this->productRepository = $productRepository;
     }
 
     /**
@@ -45,11 +44,19 @@ class AddOrderRequest extends BaseRequest
         $validator->after(function ($validator) {
             $orderItems = $this->input('order_items', []);
 
+            $products = $this->productRepository->get([
+                'whereIn' => [
+                    'field' => 'id',
+                    'values' => array_column($orderItems, 'product_id'),
+                ],
+            ])->keyBy('id');
+
             foreach ($orderItems as $index => $item) {
-                if (!$this->productService->isStockAvailable($item['product_id'], $item['quantity'])) {
+                if (!isset($products[$item['product_id']]) || $item['quantity'] > $products[$item['product_id']]->stock_quantity) {
+                    $product = $products[$item['product_id']] ?? null;
                     $validator->errors()->add(
                         "order_items.{$index}.quantity",
-                        'Insufficient stock available for the product: ' . $this->productService->getById($item['product_id'])->name . '. Only ' . $this->productService->getById($item['product_id'])->stock_quantity . ' left in stock.'
+                        'Insufficient stock available for the product: ' . $product->name . '. Only ' . $product->stock_quantity . ' left in stock.'
                     );
                 }
             }
