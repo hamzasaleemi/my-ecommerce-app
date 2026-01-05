@@ -17,8 +17,8 @@ class ReportService extends BaseService implements ServiceInterface
 
     public function getDailyProductSalesReport()
     {
-        $startDate = now()->subDay()->toDateTimeString();
-        $endDate = now()->toDateTimeString();
+        $startDate = now()->startOfDay()->toDateTimeString();
+        $endDate = now()->endOfDay()->toDateTimeString();
 
         $salesData = $this->orderItemRepository->get([
             'joins' => [

@@ -28,7 +28,7 @@ class CartItemController extends Controller
         return redirect()->back()->with('success', 'Item added to cart successfully.');
     }
 
-    public function update(UpdateCartItemRequest $request, $id)
+    public function update(UpdateCartItemRequest $request, int $id)
     {
         $validated = $request->validated();
         if ($this->cartItemService->update($id, $validated)) {
@@ -37,7 +37,7 @@ class CartItemController extends Controller
         return redirect()->back()->with('error', 'Failed to update cart item.');
     }
 
-    public function destroy($id)
+    public function destroy(int $id)
     {
         if ($this->cartItemService->destroy($id)) {
             return redirect()->back()->with('success', 'Cart item removed successfully.');
