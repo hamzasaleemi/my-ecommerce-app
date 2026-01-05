@@ -13,13 +13,15 @@ class BaseRequest extends FormRequest
         parent::__construct();
 
         $this->errorMessages = [
-            'required' => 'The :attribute field is required.',
+            'required' => 'The :attribute is required.',
             'max' => 'The :attribute may not be greater than :max characters.',
             'email' => 'The :attribute must be a valid email address.',
             'exists' => 'The selected :attribute does not exist.',
             'unique' => 'The :attribute has already been taken.',
             'integer' => 'The :attribute must be an integer.',
             'min' => 'The :attribute must be at least :min.',
+            'array' => 'The :attribute must be an array.',
+            'numeric' => 'The :attribute must be a number.'
         ];
     }
 }

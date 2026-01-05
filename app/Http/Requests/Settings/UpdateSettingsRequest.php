@@ -1,17 +1,17 @@
 <?php
 
-namespace App\Http\Requests\Cart;
+namespace App\Http\Requests\Settings;
 
 use App\Http\Requests\BaseRequest;
 
-class CartRemoveItemRequest extends BaseRequest
+class UpdateSettingsRequest extends BaseRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        if ($this->user()) {
+        if ($this->user() && $this->user()->role === 'admin') {
             return true;
         }
         return false;
@@ -25,7 +25,7 @@ class CartRemoveItemRequest extends BaseRequest
     public function rules(): array
     {
         return [
-            'product_id' => 'required|integer|exists:products,id|exists:cart_items,product_id,user_id,' . $this->user()->id,
+            'low_stock_threshold' => ['required', 'integer', 'min:0'],
         ];
     }
 
@@ -37,9 +37,9 @@ class CartRemoveItemRequest extends BaseRequest
     public function messages()
     {
         return [
-            'product_id.required' => $this->errorMessages['required'],
-            'product_id.integer' => $this->errorMessages['integer'],
-            'product_id.exists' => $this->errorMessages['exists'],
+            'low_stock_threshold.required' => $this->errorMessages['required'],
+            'low_stock_threshold.integer' => $this->errorMessages['integer'],
+            'low_stock_threshold.min' => $this->errorMessages['min']
         ];
     }
 }

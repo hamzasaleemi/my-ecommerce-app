@@ -3,17 +3,16 @@
 namespace App\Http\Requests\Cart;
 
 use App\Http\Requests\BaseRequest;
-use App\Rules\WithinStockQuantity;
-use App\Contracts\Repositories\ProductRepositoryInterface;
+use App\Contracts\Services\ProductServiceInterface;
 
-class CartUpdateItemRequest extends BaseRequest
+class AddCartItemRequest extends BaseRequest
 {
-    private ProductRepositoryInterface $productRepository;
+    private ProductServiceInterface $productService;
 
-    public function __construct(ProductRepositoryInterface $productRepository)
+    public function __construct(ProductServiceInterface $productService)
     {
         parent::__construct();
-        $this->productRepository = $productRepository;
+        $this->productService = $productService;
     }
 
     /**
@@ -35,9 +34,21 @@ class CartUpdateItemRequest extends BaseRequest
     public function rules(): array
     {
         return [
-            'product_id' => 'required|integer|exists:products,id|exists:cart_items,product_id,user_id,' . $this->user()->id,
-            'quantity' => ['required', 'integer', 'min:1', new WithinStockQuantity($this->productRepository, $this->input('product_id'))],
+            'product_id' => 'required|integer|exists:products,id',
+            'quantity' => 'required|integer|min:1',
         ];
+    }
+
+    public function withValidator($validator)
+    {
+        $validator->after(function ($validator) {
+            if (!$this->productService->isStockAvailable($this->input('product_id'), $this->input('quantity'))) {
+                $validator->errors()->add(
+                    'quantity',
+                    'Insufficient stock available for this product.'
+                );
+            }
+        });
     }
 
     /**

@@ -23,4 +23,14 @@ class UserService extends BaseService implements ServiceInterface
             'count' => true
         ]);
     }
+
+    public function getAdminEmails(): array
+    {
+        $admins = $this->userRepository->get([
+            'whereConditions' => [
+                ['field' => 'role', 'operator' => '=', 'value' => 'admin'],
+            ],
+        ]);
+        return $admins->pluck('email')->toArray();
+    }
 }

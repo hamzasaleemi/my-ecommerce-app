@@ -30,8 +30,14 @@ export default function AuthenticatedLayout({ header, children }) {
                                     Dashboard
                                 </NavLink>
                                 <NavLink
-                                    href={route('cart.view')}
-                                    active={route().current('cart.view')}
+                                    href={route('orders.index')}
+                                    active={route().current('orders.index')}
+                                >
+                                    {auth.user.role === 'admin' ? 'Orders' : 'My Orders'}
+                                </NavLink>
+                                <NavLink
+                                    href={route('cart-items.index')}
+                                    active={route().current('cart-items.index')}
                                 >
                                     Cart
                                     {cartItemsCount > 0 && (
@@ -153,8 +159,14 @@ export default function AuthenticatedLayout({ header, children }) {
                             Dashboard
                         </ResponsiveNavLink>
                         <ResponsiveNavLink
-                            href={route('cart.view')}
-                            active={route().current('cart.view')}
+                            href={route('orders.index')}
+                            active={route().current('orders.index')}
+                        >
+                            {auth.user.role === 'admin' ? 'Orders' : 'My Orders'}
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink
+                            href={route('cart-items.index')}
+                            active={route().current('cart-items.index')}
                         >
                             Cart
                         </ResponsiveNavLink>

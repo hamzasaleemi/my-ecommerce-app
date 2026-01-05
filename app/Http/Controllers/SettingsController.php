@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\Settings\SettingUpdateRequest;
+use App\Http\Requests\Settings\UpdateSettingsRequest;
 use Inertia\Inertia;
 use Inertia\Response;
 use App\Contracts\Services\SettingServiceInterface;
@@ -30,7 +30,7 @@ class SettingsController extends Controller
         ]);
     }
 
-    public function update(SettingUpdateRequest $request): \Illuminate\Http\RedirectResponse
+    public function update(UpdateSettingsRequest $request): \Illuminate\Http\RedirectResponse
     {
         $validated = $request->validated();
         $this->settingService->update($validated);

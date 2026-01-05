@@ -61,8 +61,8 @@ class ProductFactory extends Factory
         return [
             'name' => 'Product ' . fake()->unique()->numberBetween(0, 1000000),
             'description' => $descriptions[array_rand($descriptions)],
-            'price' => fake()->randomFloat(2, 1, 10000),
-            'stock_quantity' => fake()->numberBetween(0, 1000),
+            'price' => fake()->randomFloat(2, 1, 100),
+            'stock_quantity' => fake()->numberBetween(0, 100),
         ];
     }
 

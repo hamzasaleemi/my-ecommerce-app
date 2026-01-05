@@ -6,7 +6,7 @@ import { Transition } from '@headlessui/react';
 import { Link, useForm, usePage } from '@inertiajs/react';
 
 export default function UpdateSettings({ settings }) {
-    const { data, setData, patch, errors, processing, recentlySuccessful } =
+    const { data, setData, put, errors, processing, recentlySuccessful } =
         useForm({
             low_stock_threshold: settings?.low_stock_threshold,
         });
@@ -14,7 +14,7 @@ export default function UpdateSettings({ settings }) {
     const submit = (e) => {
         e.preventDefault();
 
-        patch(route('settings.update'));
+        put(route('settings.update'));
     };
 
     return (

@@ -31,6 +31,16 @@ class Order extends BaseModel
         return $this->belongsTo(User::class);
     }
 
+    public function orderItems()
+    {
+        return $this->hasMany(OrderItem::class);
+    }
+
+    public function payments()
+    {
+        return $this->hasMany(Payment::class);
+    }
+
     /**
      * ---------------------------------------------------------------------
      * End Relationships

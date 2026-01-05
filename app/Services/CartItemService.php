@@ -28,53 +28,97 @@ class CartItemService extends BaseService implements ServiceInterface
         ])->items_count ?? 0;
     }
 
-    public function add($userId, $productId, $quantity): void
+    public function getMyCartItemsIds(): array
+    {
+        return $this->cartItemRepository->get([
+            'scopeMethods' => [
+                'whereUser' => [$this->authService->getAuthenticatedUser()->id],
+            ],
+        ])->pluck('id')->toArray();
+    }
+
+    public function getById($id)
+    {
+        return $this->cartItemRepository->get([
+            'relations' => [
+                'product' => null,
+                'product.productImages' => null
+            ],
+            'scopeMethods' => [
+                'whereUser' => [$this->authService->getAuthenticatedUser()->id],
+            ],
+            'whereConditions' => [
+                ['field' => 'id', 'operator' => '=', 'value' => $id],
+            ],
+            'first' => true,
+        ]);
+    }
+
+    public function getForListing()
+    {
+        return $this->cartItemRepository->get([
+            'relations' => [
+                'product' => null,
+                'product.productImages' => null
+            ],
+            'scopeMethods' => [
+                'whereUser' => [$this->authService->getAuthenticatedUser()->id],
+            ],
+        ]);
+    }
+
+    public function store(array $data): void
     {
         $cart = $this->cartItemRepository->get([
             'scopeMethods' => [
-                'whereUser' => [$userId],
-                'whereProduct' => [$productId]
+                'whereUser' => [$this->authService->getAuthenticatedUser()->id],
+                'whereProduct' => [$data['product_id']]
             ],
             'first' => true,
         ]);
         if ($cart) {
-            $cart->quantity += $quantity;
+            $cart->quantity += $data['quantity'];
             $cart->save();
         } else {
             $this->cartItemRepository->create([
-                'user_id' => $userId,
-                'product_id' => $productId,
-                'quantity' => $quantity,
+                'user_id' => $this->authService->getAuthenticatedUser()->id,
+                'product_id' => $data['product_id'],
+                'quantity' => $data['quantity'],
             ]);
         }
     }
 
-    public function update($userId, $productId, $quantity): void
+    public function update($id, $data): bool
     {
         $cartItem = $this->cartItemRepository->get([
             'scopeMethods' => [
-                'whereUser' => [$userId],
-                'whereProduct' => [$productId]
+                'whereUser' => [$this->authService->getAuthenticatedUser()->id],
+            ],
+            'whereConditions' => [
+                ['field' => 'id', 'operator' => '=', 'value' => $id],
             ],
             'first' => true,
         ]);
         if ($cartItem) {
-            $cartItem->quantity = $quantity;
-            $cartItem->save();
+            $cartItem->update(['quantity' => $data['quantity']]);
+            return true;
         }
+        return false;
     }
 
-    public function delete($userId, $productId): void
+    public function destroy($id): bool
     {
-        $cartItem = $this->cartItemRepository->get([
-            'scopeMethods' => [
-                'whereUser' => [$userId],
-                'whereProduct' => [$productId]
-            ],
-            'first' => true,
-        ]);
-        if ($cartItem) {
-            $cartItem->delete();
+        return $this->cartItemRepository->destroy([$id]) > 0 ? true : false;
+    }
+
+    public function isStockAvailable($cartItemId, $requestedQuantity): bool
+    {
+        $cartItem = $this->cartItemRepository->find($cartItemId);
+
+        if ($cartItem && $cartItem->product) {
+            return $requestedQuantity <= $cartItem->product->stock_quantity;
         }
+
+        return false;
     }
 }

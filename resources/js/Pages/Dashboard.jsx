@@ -3,6 +3,7 @@ import DashboardCard from '@/Components/UI/AdminPanel/Dashboard/Card';
 import ProductList from '@/Components/UI/AdminPanel/Products/List';
 import { UserIcon, ShoppingBagIcon, WarningIcon } from '@/Components/UI/Icon';
 import { Head, usePage } from '@inertiajs/react';
+import { formatNumber } from '@/utils/formatter';
 
 
 export default function Dashboard({ usersCount, ordersCount, lowStockProductsCount, products }) {
@@ -25,19 +26,19 @@ export default function Dashboard({ usersCount, ordersCount, lowStockProductsCou
                                 <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
                                     <DashboardCard
                                         title="Total Users"
-                                        value={usersCount}
+                                        value={formatNumber(usersCount)}
                                         icon={<UserIcon />}
                                         type="info"
                                     />
                                     <DashboardCard
                                         title="Total Orders"
-                                        value={ordersCount}
+                                        value={formatNumber(ordersCount)}
                                         icon={<ShoppingBagIcon />}
                                         type="success"
                                     />
                                     <DashboardCard
                                         title="Low Stock Products"
-                                        value={lowStockProductsCount}
+                                        value={formatNumber(lowStockProductsCount)}
                                         icon={<WarningIcon />}
                                         type="warning"
                                     />

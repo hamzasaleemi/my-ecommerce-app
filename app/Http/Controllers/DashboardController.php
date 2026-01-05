@@ -21,6 +21,7 @@ class DashboardController extends Controller
      */
     public function index(Request $request): Response
     {
+        dd(app(\App\Contracts\Services\ReportServiceInterface::class)->getDailyProductSalesReport());
         return Inertia::render('Dashboard', $this->dashboardService->getDashboardData());
     }
 }
