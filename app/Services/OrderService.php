@@ -53,7 +53,7 @@ class OrderService extends BaseService implements ServiceInterface
         return $this->orderRepository->get([
             'relations' => ['user', 'orderItems.product.productImages', 'payments'],
             'order_by' => ['created_at' => 'desc'],
-            'paginate' => null,
+            'paginate' => true,
         ]);
     }
 
@@ -65,7 +65,7 @@ class OrderService extends BaseService implements ServiceInterface
                 ['field' => 'user_id', 'operator' => '=', 'value' => $this->authService->getAuthenticatedUser()->id],
             ],
             'order_by' => ['created_at' => 'desc'],
-            'paginate' => null,
+            'paginate' => true,
         ]);
     }
 
